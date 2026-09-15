@@ -1,0 +1,13 @@
+# Global mise tool versions -> symlinked to ~/.config/mise/config.toml
+#
+# Scope: language runtimes only. Infra CLIs (terraform, awscli) stay on
+# Homebrew for the global default and are pinned per-repo in each project's
+# own mise.toml -- that keeps client projects reproducible without forcing
+# one global version.
+#
+# A project's mise.toml always overrides what's here.
+
+[tools]
+python = "3.12"
+node   = "26"
+uv     = "0.12"

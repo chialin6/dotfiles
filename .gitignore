@@ -1,0 +1,4 @@
+# Machine-local, never tracked
+.gitconfig.local
+.zshrc.local
+.DS_Store

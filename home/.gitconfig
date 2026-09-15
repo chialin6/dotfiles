@@ -1,0 +1,9 @@
+[alias]
+	s = status
+	co = checkout
+
+# Identity lives in ~/.gitconfig.local so a client machine can use a client
+# email without editing (or accidentally committing) this tracked file.
+# A missing include file is silently ignored by git.
+[include]
+	path = ~/.gitconfig.local
