@@ -74,6 +74,16 @@ mkdir -p "$ZSH_CUSTOM/plugins"
 clone_plugin https://github.com/zsh-users/zsh-autosuggestions           zsh-autosuggestions
 clone_plugin https://github.com/zsh-users/zsh-history-substring-search  zsh-history-substring-search
 
+# ------------------------------------------------- 2b. Git filter for settings
+# claude/settings.json is symlinked into ~/.claude, and Claude Code keeps
+# rewriting an autoMode.environment block describing whatever machine it runs
+# on. This clean filter strips that block when git reads the file, so the
+# per-machine noise never dirties the working tree. Filter config is local to
+# a clone and is not cloned with it, so it has to be set here.
+info "Configuring the settings.json clean filter"
+git -C "$DOTFILES" config filter.strip-automode.clean './bin/strip-automode'
+git -C "$DOTFILES" config filter.strip-automode.smudge 'cat'
+
 # ------------------------------------------------------------- 3. Symlinks
 info "Linking dotfiles"
 link home/.zshrc      "$HOME/.zshrc"

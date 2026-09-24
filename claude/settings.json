@@ -162,5 +162,6 @@
     }
   },
   "theme": "dark",
-  "verbose": false
+  "verbose": false,
+  "model": "claude-fable-5-1[1m]"
 }

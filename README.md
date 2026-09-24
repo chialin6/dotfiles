@@ -56,7 +56,15 @@ Credentials and machine state: `~/.ssh`, `~/.aws`, `~/.config/op`,
 `~/.claude/plugins`, shell history.
 
 `claude/settings.json` is committed with the `autoMode` block stripped — it
-held learned per-project environment detail (client infra specifics) that is
-regenerated automatically and does not belong in a portable config.
+holds environment detail Claude derives from whatever machine it runs on
+(local repo paths, shell history, remotes), regenerates automatically, and is
+not portable config.
+
+Since that file is symlinked into `~/.claude`, Claude rewrites the block
+constantly and would leave the tree permanently dirty. `bin/strip-automode` is
+a git clean filter (registered by `bootstrap.sh`, wired up in `.gitattributes`)
+that removes it whenever git reads the file, so the noise is invisible while
+genuine setting changes — a new `model`, a changed hook — still show up in
+`git status` as normal.
 
 The `quarterdeck` skill is distributed internally and is not vendored here.

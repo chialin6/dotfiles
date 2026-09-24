@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+"""Git clean filter for claude/settings.json.
+
+Claude Code rewrites settings.json with an `autoMode.environment` block it
+derives from whatever machine it is running on -- local repo paths, shell
+history, remotes. That is per-machine state, not portable config, so it is
+kept out of the repo.
+
+Because ~/.claude/settings.json is a symlink into this repo, every session
+would otherwise leave the working tree dirty. As a clean filter, git compares
+the *filtered* file against the index, so stripping the block here makes those
+rewrites invisible to git while real setting changes still show up normally.
+
+Wired up by bootstrap.sh (git config filter.strip-automode.clean).
+"""
+import json
+import sys
+
+data = json.load(sys.stdin)
+data.pop("autoMode", None)
+json.dump(data, sys.stdout, indent=2)
+sys.stdout.write("\n")

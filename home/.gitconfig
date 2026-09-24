@@ -7,3 +7,14 @@
 # A missing include file is silently ignored by git.
 [include]
 	path = ~/.gitconfig.local
+
+# Authenticate GitHub over https via the gh CLI instead of prompting.
+# Written by `gh auth setup-git`, but with the absolute /opt/homebrew path
+# replaced by a bare `gh` so this also works on Intel Macs (/usr/local) and
+# anywhere else gh is on PATH. The empty `helper =` resets the chain first.
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
