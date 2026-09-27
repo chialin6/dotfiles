@@ -22,14 +22,15 @@ replaced with symlinks back into this repo, so edits here take effect live.
 | `home/.gitconfig` | `~/.gitconfig` | aliases + include of the local identity file |
 | `config/git/ignore` | `~/.config/git/ignore` | global gitignore |
 | `mise/config.toml` | `~/.config/mise/config.toml` | global runtime versions |
-| `claude/` | `~/.claude/` | Claude Code settings, hooks, output styles, skills |
-| `Brewfile` | — | `brew bundle` manifest: formulae, casks, VS Code extensions |
+| `iterm2/dotfiles.json` | `~/Library/Application Support/iTerm2/DynamicProfiles/` | iTerm2 profile using the Meslo Nerd Font (set as default) |
+| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles |
+| `Brewfile` | — | `brew bundle` manifest: formulae and casks |
 
 ## Three layers
 
 - **Homebrew** (`Brewfile`) — apps and system CLIs.
 - **mise** (`mise/config.toml`) — language runtimes: python, node, uv.
-  Infra CLIs (terraform, awscli) stay on Homebrew globally and are pinned
+  Infra CLIs (terraform) stay on Homebrew globally and are pinned
   per-repo in each project's own `mise.toml`, which always wins over the global.
 - **This repo** — the config files themselves.
 

@@ -95,12 +95,8 @@ link mise/config.toml  "$HOME/.config/mise/config.toml"
 
 info "Linking Claude Code config"
 link claude/CLAUDE.md                  "$HOME/.claude/CLAUDE.md"
-link claude/RTK.md                     "$HOME/.claude/RTK.md"
 link claude/settings.json              "$HOME/.claude/settings.json"
-link claude/hooks                      "$HOME/.claude/hooks"
 link claude/output-styles              "$HOME/.claude/output-styles"
-link claude/skills/address-pr-comments "$HOME/.claude/skills/address-pr-comments"
-link claude/skills/review-pr           "$HOME/.claude/skills/review-pr"
 
 # ------------------------------------------- 3b. iTerm2 status-line helper
 # settings.json points several Claude Code hooks at ~/.config/iterm2/cc-status,
@@ -114,6 +110,24 @@ if [ -e "$ITERM_CC_STATUS" ]; then
   fi
 else
   warn "iTerm2 not found - Claude Code status-line hooks will be no-ops until it is installed"
+fi
+
+# ------------------------------------------------- 3c. iTerm2 font profile
+# iterm2/dotfiles.json is a Dynamic Profile: a "Dotfiles" profile that inherits
+# everything from "Default" but uses the Meslo Nerd Font, so the amuse theme's
+# git-branch glyph renders. iTerm loads anything in DynamicProfiles on its own.
+link iterm2/dotfiles.json "$HOME/Library/Application Support/iTerm2/DynamicProfiles/dotfiles.json"
+
+# Make it the default profile. iTerm keeps its prefs in memory and writes them
+# back on quit, so a write made while it is running would be lost.
+ITERM_PROFILE_GUID="063C7BE3-25C9-4BFB-92C8-BEE61FDA67FF"
+if [ "$(defaults read com.googlecode.iterm2 "Default Bookmark Guid" 2>/dev/null)" != "$ITERM_PROFILE_GUID" ]; then
+  if pgrep -xq iTerm2; then
+    warn "iTerm2 is running - to use the Nerd Font, pick Settings > Profiles > Dotfiles > Other Actions > Set as Default (or quit iTerm and re-run this script)"
+  else
+    info "Setting the iTerm2 default profile to Dotfiles"
+    defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "$ITERM_PROFILE_GUID"
+  fi
 fi
 
 # --------------------------------------------------- 4. Machine-local files
@@ -142,7 +156,6 @@ Next steps:
   4. optional: ~/.zshrc.local      # machine-specific env vars, sourced last
 
 Not handled here (installed separately):
-  - Claude Code itself and the ECC plugin marketplace (settings.json will
-    pull ECC on first run)
+  - Claude Code itself
   - the quarterdeck skill (distributed internally, not vendored in this repo)
 MSG

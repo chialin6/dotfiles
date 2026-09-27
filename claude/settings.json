@@ -38,29 +38,9 @@
             "command": "$HOME/.config/iterm2/cc-status"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/pr-watch-register.sh",
-            "timeout": 10,
-            "async": true
-          }
-        ]
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      },
       {
         "hooks": [
           {
@@ -86,16 +66,6 @@
           {
             "type": "command",
             "command": "$HOME/.config/iterm2/cc-status"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 $HOME/.claude/hooks/pr-watch-report.py",
-            "timeout": 20,
-            "statusMessage": "Checking watched PRs for review comments..."
           }
         ]
       }
@@ -142,24 +112,7 @@
     ]
   },
   "enabledPlugins": {
-    "frontend-design@claude-plugins-official": false,
-    "ecc@ecc": true
-  },
-  "extraKnownMarketplaces": {
-    "ecc": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/affaan-m/ECC.git"
-      }
-    }
-  },
-  "pluginConfigs": {
-    "ecc@ecc": {
-      "options": {
-        "hooks_enabled": true,
-        "hook_profile": "standard"
-      }
-    }
+    "frontend-design@claude-plugins-official": false
   },
   "theme": "dark",
   "verbose": false,

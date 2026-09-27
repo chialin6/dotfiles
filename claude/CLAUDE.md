@@ -1,5 +1,3 @@
-@RTK.md
-
 # Git workflow
 
 In any git repository, always do non-trivial work (new features, multi-file edits, anything beyond a one-line fix) on a dedicated branch — never directly on `main`/`master` or whatever the currently checked-out branch was at session start. Prefer an actual `git worktree` (a separate working directory via `git worktree add ../<repo>-<branch> -b <branch>`) over an in-place `git checkout -b` when the work will span multiple turns or might need to be set aside — it keeps the primary checkout untouched and lets me switch back to it instantly without stashing. A plain `git checkout -b` in place is acceptable for short-lived, single-turn work where a worktree would be overkill. Only skip branching entirely if the user explicitly says to work directly on the current branch.

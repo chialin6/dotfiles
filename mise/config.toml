@@ -1,6 +1,6 @@
 # Global mise tool versions -> symlinked to ~/.config/mise/config.toml
 #
-# Scope: language runtimes only. Infra CLIs (terraform, awscli) stay on
+# Scope: language runtimes only. Infra CLIs (terraform) stay on
 # Homebrew for the global default and are pinned per-repo in each project's
 # own mise.toml -- that keeps client projects reproducible without forcing
 # one global version.
