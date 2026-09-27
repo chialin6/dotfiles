@@ -1,0 +1,12 @@
+{
+  "Profiles": [
+    {
+      "Name": "Dotfiles",
+      "Guid": "063C7BE3-25C9-4BFB-92C8-BEE61FDA67FF",
+      "Dynamic Profile Parent Name": "Default",
+      "Normal Font": "MesloLGSNFM-Regular 13",
+      "Non Ascii Font": "MesloLGSNFM-Regular 13",
+      "Use Non-ASCII Font": false
+    }
+  ]
+}
