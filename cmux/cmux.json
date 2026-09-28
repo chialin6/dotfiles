@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+
+  // JSONC. Only settings that differ from the defaults are listed here; see
+  // `cmux docs settings` for the rest. Apply edits with `cmux reload-config`.
+
+  // Keep only local dev servers in cmux's embedded browser. Every other link
+  // (GitHub, Google/Okta SSO, docs) goes to the default browser, where the
+  // login sessions already live.
+  "browser": {
+    "hostsToOpenInEmbeddedBrowser": [
+      "localhost",
+      "*.localhost",
+      "127.0.0.1",
+      "::1",
+      "0.0.0.0",
+      "*.localtest.me"
+    ]
+  },
+
+  "sidebar": {
+    // PR links need a GitHub login, so send them to the default browser too.
+    "openPullRequestLinksInCmuxBrowser": false,
+    "openPortLinksInCmuxBrowser": true
+  }
+}

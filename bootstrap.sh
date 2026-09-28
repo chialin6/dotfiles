@@ -92,11 +92,13 @@ link home/.tmux.conf  "$HOME/.tmux.conf"
 link home/.gitconfig  "$HOME/.gitconfig"
 link config/git/ignore "$HOME/.config/git/ignore"
 link mise/config.toml  "$HOME/.config/mise/config.toml"
+link cmux/cmux.json    "$HOME/.config/cmux/cmux.json"
 
 info "Linking Claude Code config"
 link claude/CLAUDE.md                  "$HOME/.claude/CLAUDE.md"
 link claude/settings.json              "$HOME/.claude/settings.json"
 link claude/output-styles              "$HOME/.claude/output-styles"
+link claude/hooks                      "$HOME/.claude/hooks"
 
 # ------------------------------------------- 3b. iTerm2 status-line helper
 # settings.json points several Claude Code hooks at ~/.config/iterm2/cc-status,
@@ -142,6 +144,22 @@ if command -v mise >/dev/null 2>&1; then
   mise install
 else
   warn "mise not found - skipping (brew bundle should have installed it)"
+fi
+
+# ------------------------------------------- 5b. Optional Claude plugins
+# ECC (github.com/affaan-m/ECC) adds hundreds of skills, agents, and hooks and
+# slows Claude Code startup, so it is opt-in. Answer the prompt, or set
+# INSTALL_ECC=1 / INSTALL_ECC=0 to skip it (non-interactive runs default to no).
+if command -v claude >/dev/null 2>&1; then
+  if [ -z "${INSTALL_ECC:-}" ] && [ -t 0 ]; then
+    read -r -p "Install the ECC Claude Code plugin? [y/N] " reply
+    case "$reply" in [yY]*) INSTALL_ECC=1 ;; *) INSTALL_ECC=0 ;; esac
+  fi
+  if [ "${INSTALL_ECC:-0}" = 1 ]; then
+    info "Installing the ECC Claude Code plugin"
+    claude plugin marketplace add https://github.com/affaan-m/ECC.git || warn "ECC marketplace add failed"
+    claude plugin install ecc@ecc || warn "ECC install failed"
+  fi
 fi
 
 # ----------------------------------------------------------------- 6. Done

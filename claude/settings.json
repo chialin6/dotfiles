@@ -38,6 +38,17 @@
             "command": "$HOME/.config/iterm2/cc-status"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/zsh-history.py",
+            "timeout": 5,
+            "async": true
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -106,6 +117,19 @@
           {
             "type": "command",
             "command": "$HOME/.config/iterm2/cc-status"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/zsh-history.py",
+            "timeout": 5,
+            "async": true
           }
         ]
       }

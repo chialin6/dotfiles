@@ -23,7 +23,8 @@ replaced with symlinks back into this repo, so edits here take effect live.
 | `config/git/ignore` | `~/.config/git/ignore` | global gitignore |
 | `mise/config.toml` | `~/.config/mise/config.toml` | global runtime versions |
 | `iterm2/dotfiles.json` | `~/Library/Application Support/iTerm2/DynamicProfiles/` | iTerm2 profile using the Meslo Nerd Font (set as default) |
-| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles |
+| `cmux/cmux.json` | `~/.config/cmux/cmux.json` | cmux: only localhost dev URLs open in the embedded browser; SSO/GitHub links go to the default browser |
+| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles, hooks |
 | `Brewfile` | — | `brew bundle` manifest: formulae and casks |
 
 ## Three layers
@@ -49,6 +50,14 @@ Not vendored — `bootstrap.sh` installs it and clones the two custom plugins
 that `.zshrc` references (`zsh-autosuggestions`,
 `zsh-history-substring-search`). The other plugins in the list (`git`,
 `gitfast`, `fzf`, `tmux`) ship with oh-my-zsh. Theme is `amuse`, built in.
+
+## Claude Code
+
+- `claude/hooks/zsh-history.py` appends every Bash command Claude runs to
+  `~/.zsh_history`, so up-arrow substring search finds them alongside your own.
+- The ECC plugin is optional: `bootstrap.sh` asks before installing it
+  (`INSTALL_ECC=1` or `INSTALL_ECC=0` answers without prompting). To remove it later:
+  `claude plugin uninstall ecc@ecc && claude plugin marketplace remove ecc`.
 
 ## Deliberately not here
 
