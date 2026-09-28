@@ -97,6 +97,7 @@ info "Linking Claude Code config"
 link claude/CLAUDE.md                  "$HOME/.claude/CLAUDE.md"
 link claude/settings.json              "$HOME/.claude/settings.json"
 link claude/output-styles              "$HOME/.claude/output-styles"
+link claude/hooks                      "$HOME/.claude/hooks"
 
 # ------------------------------------------- 3b. iTerm2 status-line helper
 # settings.json points several Claude Code hooks at ~/.config/iterm2/cc-status,
