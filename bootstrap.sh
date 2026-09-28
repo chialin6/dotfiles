@@ -17,6 +17,27 @@ ZSH_CUSTOM="$ZSH_DIR/custom"
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[!]\033[0m %s\n' "$*"; }
 
+# seed <source-in-repo> <target-path>
+# Copy (not symlink) a file that the app rewrites itself. Claude Code replaces
+# a symlinked settings.json with a regular file on its first write anyway.
+# Copies when the target is missing or is a symlink left by an older bootstrap;
+# a real file already there is this machine's copy and is left alone.
+seed() {
+  local src="$DOTFILES/$1" dst="$2"
+  [ -e "$src" ] || { warn "missing in repo, skipped: $1"; return; }
+  mkdir -p "$(dirname "$dst")"
+  if [ -f "$dst" ] && [ ! -L "$dst" ]; then
+    cmp -s "$src" "$dst" || warn "$dst differs from the repo copy - kept as is (diff $src $dst)"
+    return
+  fi
+  if [ -L "$dst" ]; then
+    mkdir -p "$BACKUP/$(dirname "${dst#"$HOME"/}")"
+    mv "$dst" "$BACKUP/${dst#"$HOME"/}"
+  fi
+  cp "$src" "$dst"
+  echo "    $dst (copied from $src)"
+}
+
 # link <source-in-repo> <target-path>
 link() {
   local src="$DOTFILES/$1" dst="$2"
@@ -75,11 +96,11 @@ clone_plugin https://github.com/zsh-users/zsh-autosuggestions           zsh-auto
 clone_plugin https://github.com/zsh-users/zsh-history-substring-search  zsh-history-substring-search
 
 # ------------------------------------------------- 2b. Git filter for settings
-# claude/settings.json is symlinked into ~/.claude, and Claude Code keeps
-# rewriting an autoMode.environment block describing whatever machine it runs
-# on. This clean filter strips that block when git reads the file, so the
-# per-machine noise never dirties the working tree. Filter config is local to
-# a clone and is not cloned with it, so it has to be set here.
+# Claude Code adds an autoMode.environment block describing whatever machine it
+# runs on. This clean filter strips that block when git reads
+# claude/settings.json, so it never gets committed if you copy a live
+# ~/.claude/settings.json back into the repo. Filter config is local to a clone
+# and is not cloned with it, so it has to be set here.
 info "Configuring the settings.json clean filter"
 git -C "$DOTFILES" config filter.strip-automode.clean './bin/strip-automode'
 git -C "$DOTFILES" config filter.strip-automode.smudge 'cat'
@@ -96,7 +117,7 @@ link cmux/cmux.json    "$HOME/.config/cmux/cmux.json"
 
 info "Linking Claude Code config"
 link claude/CLAUDE.md                  "$HOME/.claude/CLAUDE.md"
-link claude/settings.json              "$HOME/.claude/settings.json"
+seed claude/settings.json              "$HOME/.claude/settings.json"
 link claude/output-styles              "$HOME/.claude/output-styles"
 link claude/hooks                      "$HOME/.claude/hooks"
 

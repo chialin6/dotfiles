@@ -24,7 +24,7 @@ replaced with symlinks back into this repo, so edits here take effect live.
 | `mise/config.toml` | `~/.config/mise/config.toml` | global runtime versions |
 | `iterm2/dotfiles.json` | `~/Library/Application Support/iTerm2/DynamicProfiles/` | iTerm2 profile using the Meslo Nerd Font (set as default) |
 | `cmux/cmux.json` | `~/.config/cmux/cmux.json` | cmux: only localhost dev URLs open in the embedded browser; SSO/GitHub links go to the default browser |
-| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles, hooks |
+| `claude/` | `~/.claude/` | Claude Code CLAUDE.md, output styles, hooks (symlinked) and settings.json (copied) |
 | `Brewfile` | — | `brew bundle` manifest: formulae and casks |
 
 ## Three layers
@@ -70,11 +70,13 @@ holds environment detail Claude derives from whatever machine it runs on
 (local repo paths, shell history, remotes), regenerates automatically, and is
 not portable config.
 
-Since that file is symlinked into `~/.claude`, Claude rewrites the block
-constantly and would leave the tree permanently dirty. `bin/strip-automode` is
-a git clean filter (registered by `bootstrap.sh`, wired up in `.gitattributes`)
-that removes it whenever git reads the file, so the noise is invisible while
-genuine setting changes — a new `model`, a changed hook — still show up in
-`git status` as normal.
+Unlike everything else, `claude/settings.json` is **copied** to
+`~/.claude/settings.json`, not symlinked: Claude Code rewrites that file itself
+(and replaces a symlink with a regular file when it does). `bootstrap.sh` only
+copies it when `~/.claude/settings.json` is missing, and warns instead of
+overwriting when a local copy differs. To publish a local change, copy the
+file back into the repo; `bin/strip-automode`, a git clean filter registered by
+`bootstrap.sh` and wired up in `.gitattributes`, drops the `autoMode` block as
+git reads it so it never gets committed.
 
 The `quarterdeck` skill is distributed internally and is not vendored here.
