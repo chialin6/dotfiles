@@ -127,6 +127,7 @@ bindkey '^N' history-substring-search-down
 # Example aliases
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
+alias cc="claude"
 
 # Homebrew
 HOMEBREW_AUTO_UPDATE_SECS=86400
