@@ -58,11 +58,13 @@ that `.zshrc` references (`zsh-autosuggestions`,
   own. Commands Claude runs on its own are left out. A `!` command lands in
   history at your next prompt, when Claude finishes a turn, or when the session
   ends, stamped with the time you ran it.
-- The `ccgrep` plugin is always installed, from the `ode-internal/plugin-marketplace`
-  org marketplace on claude.ai. It adds a `ccgrep` skill that finds past Claude Code
-  sessions by what was said in them and gives the `claude --resume <id>` command.
-  This needs `claude` logged in to that org; if it isn't, bootstrap warns and
-  carries on.
+- The `ccgrep` plugin adds a `ccgrep` skill that finds past Claude Code sessions
+  by what was said in them and gives the `claude --resume <id>` command. It comes
+  from a private claude.ai org marketplace, so it is not vendored and the
+  marketplace is not named here. To have bootstrap install it, put
+  `export CCGREP_MARKETPLACE=<marketplace CLI name>` in `~/.zshrc.local` (the name
+  is shown by `claude plugin marketplace list`). Unset, bootstrap skips it; if the
+  install fails, bootstrap warns and carries on.
 
 ## Deliberately not here
 
