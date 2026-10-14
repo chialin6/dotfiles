@@ -58,6 +58,11 @@ that `.zshrc` references (`zsh-autosuggestions`,
 - The ECC plugin is optional: `bootstrap.sh` asks before installing it
   (`INSTALL_ECC=1` or `INSTALL_ECC=0` answers without prompting). To remove it later:
   `claude plugin uninstall ecc@ecc && claude plugin marketplace remove ecc`.
+- The `ccgrep` plugin is always installed, from the `ode-internal/plugin-marketplace`
+  org marketplace on claude.ai. It adds a `ccgrep` skill that finds past Claude Code
+  sessions by what was said in them and gives the `claude --resume <id>` command.
+  This needs `claude` logged in to that org; if it isn't, bootstrap warns and
+  carries on.
 
 ## Deliberately not here
 

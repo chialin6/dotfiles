@@ -160,6 +160,17 @@ if command -v claude >/dev/null 2>&1; then
     claude plugin marketplace add https://github.com/affaan-m/ECC.git || warn "ECC marketplace add failed"
     claude plugin install ecc@ecc || warn "ECC install failed"
   fi
+
+  # ccgrep searches past Claude Code sessions by what was said and reopens one.
+  # It comes from the ode-internal org marketplace on claude.ai, so this needs
+  # `claude` to be logged in to that org; otherwise it warns and moves on.
+  # "marketplace add" fails if the marketplace is already there, so check first.
+  CCGREP_MARKETPLACE="claudeai-ode-internal-plugin-marketplace"
+  info "Installing the ccgrep Claude Code plugin"
+  if ! claude plugin marketplace list 2>/dev/null | grep -Eq "^ +[^ ]+ $CCGREP_MARKETPLACE\$"; then
+    claude plugin marketplace add --claudeai "$CCGREP_MARKETPLACE" || warn "ode-internal marketplace add failed"
+  fi
+  claude plugin install "ccgrep@$CCGREP_MARKETPLACE" || warn "ccgrep install failed"
 fi
 
 # ----------------------------------------------------------------- 6. Done
