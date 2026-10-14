@@ -53,8 +53,11 @@ that `.zshrc` references (`zsh-autosuggestions`,
 
 ## Claude Code
 
-- `claude/hooks/zsh-history.py` appends every Bash command Claude runs to
-  `~/.zsh_history`, so up-arrow substring search finds them alongside your own.
+- `claude/hooks/zsh-history.py` appends the `!` commands you type in Claude Code
+  to `~/.zsh_history`, so up-arrow substring search finds them alongside your
+  own. Commands Claude runs on its own are left out. A `!` command lands in
+  history at your next prompt, when Claude finishes a turn, or when the session
+  ends, stamped with the time you ran it.
 - The `ccgrep` plugin is always installed, from the `ode-internal/plugin-marketplace`
   org marketplace on claude.ai. It adds a `ccgrep` skill that finds past Claude Code
   sessions by what was said in them and gives the `claude --resume <id>` command.
