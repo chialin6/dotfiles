@@ -146,21 +146,8 @@ else
   warn "mise not found - skipping (brew bundle should have installed it)"
 fi
 
-# ------------------------------------------- 5b. Optional Claude plugins
-# ECC (github.com/affaan-m/ECC) adds hundreds of skills, agents, and hooks and
-# slows Claude Code startup, so it is opt-in. Answer the prompt, or set
-# INSTALL_ECC=1 / INSTALL_ECC=0 to skip it (non-interactive runs default to no).
+# ------------------------------------------------- 5b. Claude Code plugins
 if command -v claude >/dev/null 2>&1; then
-  if [ -z "${INSTALL_ECC:-}" ] && [ -t 0 ]; then
-    read -r -p "Install the ECC Claude Code plugin? [y/N] " reply
-    case "$reply" in [yY]*) INSTALL_ECC=1 ;; *) INSTALL_ECC=0 ;; esac
-  fi
-  if [ "${INSTALL_ECC:-0}" = 1 ]; then
-    info "Installing the ECC Claude Code plugin"
-    claude plugin marketplace add https://github.com/affaan-m/ECC.git || warn "ECC marketplace add failed"
-    claude plugin install ecc@ecc || warn "ECC install failed"
-  fi
-
   # ccgrep searches past Claude Code sessions by what was said and reopens one.
   # It comes from the ode-internal org marketplace on claude.ai, so this needs
   # `claude` to be logged in to that org; otherwise it warns and moves on.
