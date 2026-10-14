@@ -149,15 +149,20 @@ fi
 # ------------------------------------------------- 5b. Claude Code plugins
 if command -v claude >/dev/null 2>&1; then
   # ccgrep searches past Claude Code sessions by what was said and reopens one.
-  # It comes from the ode-internal org marketplace on claude.ai, so this needs
-  # `claude` to be logged in to that org; otherwise it warns and moves on.
-  # "marketplace add" fails if the marketplace is already there, so check first.
-  CCGREP_MARKETPLACE="claudeai-ode-internal-plugin-marketplace"
-  info "Installing the ccgrep Claude Code plugin"
-  if ! claude plugin marketplace list 2>/dev/null | grep -Eq "^ +[^ ]+ $CCGREP_MARKETPLACE\$"; then
-    claude plugin marketplace add --claudeai "$CCGREP_MARKETPLACE" || warn "ode-internal marketplace add failed"
+  # It comes from a private claude.ai org marketplace whose name is kept out of
+  # this repo: export CCGREP_MARKETPLACE=<its CLI name> in ~/.zshrc.local to
+  # install it, or leave it unset to skip. "marketplace add" fails if the
+  # marketplace is already there, so check first.
+  if [ -n "${CCGREP_MARKETPLACE:-}" ]; then
+    info "Installing the ccgrep Claude Code plugin"
+    if ! { claude plugin marketplace list 2>/dev/null | grep -Eq "^ +[^ ]+ $CCGREP_MARKETPLACE\$" \
+             || claude plugin marketplace add --claudeai "$CCGREP_MARKETPLACE"; } \
+       || ! claude plugin install "ccgrep@$CCGREP_MARKETPLACE"; then
+      warn "ccgrep install failed (no access to $CCGREP_MARKETPLACE?) - install it manually"
+    fi
+  else
+    info "CCGREP_MARKETPLACE not set - skipping the ccgrep plugin"
   fi
-  claude plugin install "ccgrep@$CCGREP_MARKETPLACE" || warn "ccgrep install failed"
 fi
 
 # ----------------------------------------------------------------- 6. Done
