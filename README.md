@@ -24,7 +24,8 @@ replaced with symlinks back into this repo, so edits here take effect live.
 | `mise/config.toml` | `~/.config/mise/config.toml` | global runtime versions |
 | `iterm2/dotfiles.json` | `~/Library/Application Support/iTerm2/DynamicProfiles/` | iTerm2 profile using the Meslo Nerd Font (set as default) |
 | `cmux/cmux.json` | `~/.config/cmux/cmux.json` | cmux: only localhost dev URLs open in the embedded browser; SSO/GitHub links go to the default browser |
-| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles, hooks |
+| `claude/` | `~/.claude/` | Claude Code settings, CLAUDE.md, output styles, hooks, skills, scripts |
+| `launchd/` | `~/Library/LaunchAgents/` | weekly Claude Code setup-review job |
 | `Brewfile` | — | `brew bundle` manifest: formulae and casks |
 
 ## Three layers
@@ -58,6 +59,19 @@ that `.zshrc` references (`zsh-autosuggestions`,
   own. Commands Claude runs on its own are left out. A `!` command lands in
   history at your next prompt, when Claude finishes a turn, or when the session
   ends, stamped with the time you ran it.
+- **Weekly setup review.** Every Monday at 09:30 a launchd job
+  (`launchd/claude-setup-review.plist`, installed by bootstrap) runs
+  `claude/bin/weekly-setup-review`. It condenses the last 7 days of
+  `~/.claude/projects` transcripts with `claude/bin/session-digest.py`, then runs
+  Claude headless with the `setup-review` skill (`claude/skills/setup-review`)
+  and read-only tools, and writes suggested hooks, skills, permission entries
+  and CLAUDE.md rules to `~/.claude/setup-reviews/<date>.md`. It only proposes;
+  nothing is changed. Run it by hand with `~/.claude/bin/weekly-setup-review`,
+  or ask for `/setup-review` in any session. Cost is capped by
+  `SETUP_REVIEW_BUDGET_USD` (default 10; a run is about $5 on Opus) and the model
+  can be set with `SETUP_REVIEW_MODEL` (e.g. `sonnet`), both in
+  `~/.claude/setup-review.env` (launchd does not read `~/.zshrc.local`). Disable with
+  `launchctl bootout gui/$(id -u)/dotfiles.claude-setup-review`.
 - The `ccgrep` plugin adds a `ccgrep` skill that finds past Claude Code sessions
   by what was said in them and gives the `claude --resume <id>` command. It comes
   from a private claude.ai org marketplace, so it is not vendored and the

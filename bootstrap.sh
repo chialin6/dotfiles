@@ -99,6 +99,12 @@ link claude/CLAUDE.md                  "$HOME/.claude/CLAUDE.md"
 link claude/settings.json              "$HOME/.claude/settings.json"
 link claude/output-styles              "$HOME/.claude/output-styles"
 link claude/hooks                      "$HOME/.claude/hooks"
+link claude/bin                        "$HOME/.claude/bin"
+# ~/.claude/skills also holds plugin-managed skills, so link per skill, not the dir
+for skill in "$DOTFILES"/claude/skills/*/; do
+  name="$(basename "$skill")"
+  link "claude/skills/$name" "$HOME/.claude/skills/$name"
+done
 
 # ------------------------------------------- 3b. iTerm2 status-line helper
 # settings.json points several Claude Code hooks at ~/.config/iterm2/cc-status,
@@ -130,6 +136,20 @@ if [ "$(defaults read com.googlecode.iterm2 "Default Bookmark Guid" 2>/dev/null)
     info "Setting the iTerm2 default profile to Dotfiles"
     defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "$ITERM_PROFILE_GUID"
   fi
+fi
+
+# ------------------------------------------ 3d. Weekly Claude setup review
+# launchd plists cannot expand $HOME, so render the template with this
+# machine's path, then (re)load it. Mondays 09:30; see claude/bin/weekly-setup-review.
+PLIST_LABEL="dotfiles.claude-setup-review"
+PLIST_DST="$HOME/Library/LaunchAgents/$PLIST_LABEL.plist"
+PLIST_NEW="$(sed "s|__HOME__|$HOME|g" "$DOTFILES/launchd/claude-setup-review.plist")"
+if [ "$(cat "$PLIST_DST" 2>/dev/null)" != "$PLIST_NEW" ]; then
+  info "Installing the weekly Claude Code setup-review job"
+  mkdir -p "$(dirname "$PLIST_DST")"
+  launchctl bootout "gui/$(id -u)/$PLIST_LABEL" 2>/dev/null || true
+  printf '%s\n' "$PLIST_NEW" >"$PLIST_DST"
+  launchctl bootstrap "gui/$(id -u)" "$PLIST_DST" || warn "could not load $PLIST_DST"
 fi
 
 # --------------------------------------------------- 4. Machine-local files
