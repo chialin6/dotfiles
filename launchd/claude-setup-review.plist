@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Weekly Claude Code setup review, Mondays 09:30 local time. If the Mac is
+  asleep then, launchd runs it once on wake. bootstrap.sh copies this to
+  ~/Library/LaunchAgents with __HOME__ replaced (launchd does not expand $HOME)
+  and loads it.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dotfiles.claude-setup-review</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__HOME__/.claude/bin/weekly-setup-review</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key>
+    <integer>1</integer>
+    <key>Hour</key>
+    <integer>9</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+  <key>StandardErrorPath</key>
+  <string>/tmp/claude-setup-review.err</string>
+</dict>
+</plist>

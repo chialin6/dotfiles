@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Weekly Claude Code setup review. Run by launchd (see
+# launchd/claude-setup-review.plist), or by hand any time:
+#
+#   ~/.claude/bin/weekly-setup-review [days]
+#
+# Builds a digest of the last week's sessions, then runs Claude headless with
+# the setup-review skill and read-only tools (no Bash, no Edit/Write), so the
+# run can look but not change anything. The report lands in
+# ~/.claude/setup-reviews/<date>.md and a macOS notification points to it.
+
+set -euo pipefail
+
+DAYS="${1:-7}"
+OUT_DIR="$HOME/.claude/setup-reviews"
+STAMP="$(date +%Y-%m-%d)"
+REPORT="$OUT_DIR/$STAMP.md"
+DIGEST="$OUT_DIR/.digest-$STAMP.md"
+LOG="$OUT_DIR/.last-run.log"
+
+# launchd starts with a bare PATH; find claude where the installers put it.
+export PATH="$HOME/.local/bin:$HOME/.claude/local:/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# launchd does not read ~/.zshrc.local; optional overrides
+# (SETUP_REVIEW_BUDGET_USD, SETUP_REVIEW_MODEL) go in this file instead.
+[ -f "$HOME/.claude/setup-review.env" ] && . "$HOME/.claude/setup-review.env"
+
+mkdir -p "$OUT_DIR"
+exec >"$LOG" 2>&1
+echo "run started $(date)"
+
+"$HOME/.claude/bin/session-digest.py" --days "$DAYS" >"$DIGEST"
+
+claude -p "/setup-review The session digest for the last $DAYS days is at $DIGEST. Today is $STAMP." \
+  --tools "Read,Grep,Glob,Skill" \
+  --permission-mode dontAsk \
+  --add-dir "$HOME/.claude" \
+  --max-budget-usd "${SETUP_REVIEW_BUDGET_USD:-10}" \
+  ${SETUP_REVIEW_MODEL:+--model "$SETUP_REVIEW_MODEL"} \
+  >"$REPORT.tmp"
+
+mv "$REPORT.tmp" "$REPORT"
+rm -f "$DIGEST"
+echo "report written to $REPORT"
+
+osascript -e "display notification \"Report: $REPORT\" with title \"Claude Code setup review\"" || true
